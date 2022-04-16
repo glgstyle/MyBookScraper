@@ -1,7 +1,6 @@
 # Partie 1: récupération des infos à partir d'un lien article
 
 # Choisissez n'importe quelle page Produit sur le site de Books to Scrape. Écrivez un script Python qui visite cette page et en extrait les informations suivantes :
-import re
 
 import requests
 from bs4 import BeautifulSoup
@@ -40,6 +39,7 @@ find_title()
 
 
 def find_price_including_tax():
+
     products_infos = parser.find_all('td')
     price_including_tax = products_infos[3].string
     price_tva = price_including_tax.replace('£', '')
