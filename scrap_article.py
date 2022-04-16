@@ -40,6 +40,7 @@ find_title()
 
 
 def find_price_including_tax():
+
     products_infos = parser.find_all('td')
     price_including_tax = products_infos[3].string
     price_tva = price_including_tax.replace('£', '')
