@@ -63,4 +63,8 @@ header = ['product_page_url', 'universal_ product_code (upc)', 'title', 'price_i
 with open('article_data2.csv', 'w') as article:
     w = csv.writer(article, delimiter=',')
     w.writerow(header)
+<<<<<<< HEAD
     w.writerow(infos)
+=======
+    w.writerow(infos)
+>>>>>>> a747e0573510831407fa6000d6f67e97b280669c
