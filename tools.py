@@ -56,6 +56,7 @@ def get_article_infos(url):
 
 infos = get_article_infos('http://books.toscrape.com/catalogue/love-lies-and-spies_622/index.html')
 
+
 # Écrivez les données dans un fichier CSV qui utilise les champs ci-dessus comme en-têtes de colonnes.
 header = ['product_page_url', 'universal_ product_code (upc)', 'title', 'price_including_tax', 'price_excluding_tax',
           'number_available', 'product_description', 'category', 'review_rating', 'image_url']
