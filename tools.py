@@ -52,79 +52,58 @@ def get_article_infos(url):
     return data
 
 
-infos = get_article_infos('http://books.toscrape.com/catalogue/love-lies-and-spies_622/index.html')
+# Find all books infos in category
+def find_books_infos_in_category(pagination):
 
-# Écrivez les données dans un fichier CSV qui utilise les champs ci-dessus comme en-têtes de colonnes.
-header = ['product_page_url', 'universal_ product_code (upc)', 'title', 'price_including_tax', 'price_excluding_tax',
-          'number_available', 'product_description', 'category', 'review_rating', 'image_url']
+    allListArticlesNextPages = []
+# if there is more than 1 page > loop on every page to find books infos
+    if len(pagination) > 1:
+        for page in pagination:
+            print(page)
+            resp = requests.get(page)
+            next_soup = BeautifulSoup(resp.content, 'html.parser')
+            next_soup_ol = next_soup.find('ol')
+            h3s = next_soup_ol.find_all('h3')
+    # print(range(len(pagination)))
+            for h3 in h3s:
+                url = 'http://books.toscrape.com/catalogue' + h3.find('a').get('href')
+                url_replace = url.replace('../../..', '')
+                info = get_article_infos(url_replace)
+                allListArticlesNextPages.append(info)
+    return allListArticlesNextPages
 
-with open('article_data2.csv', 'w', encoding='utf-8') as article:
-    w = csv.writer(article, delimiter=',')
-    w.writerow(header)
-    w.writerow(infos)
 
+# Search if there is a next page or not and send urls of each page from category in a table
+def search_pagination(baseUrl):
+# baseUrl = 'http://books.toscrape.com/catalogue/category/books/fiction_10/'
+    response = requests.get(baseUrl)
+    soup = BeautifulSoup(response.content, 'html.parser')
+    session = HTMLSession()
+    ulPager = soup.find_all('ul', class_='pager')
 
+    pages = []
+    if not ulPager == []:
+
+        r = session.get(baseUrl)
+        for html in r.html:
+            pages.append(html.url)
+    else:
+        pages.append(baseUrl)
+
+    return pages
+
+# Find books in category
 def get_category_articles_infos(categoryUrl):
     category_response = requests.get(categoryUrl)
     soup = BeautifulSoup(category_response.content, 'html.parser')
-    soup_ol = soup.find('ol')
-    session = HTMLSession()
-    data_all_articles = []
+    pagination = search_pagination(categoryUrl)
+    data_all_articles = find_books_infos_in_category(pagination)
 
-    # Find books in category
-
-    def find_books_in_category():
-
-        h3s = soup_ol.find_all('h3')
-        for h3 in h3s:
-            url = 'http://books.toscrape.com/catalogue' + h3.find('a').get('href')
-            url_replace = url.replace('../../..', '')
-            info = get_article_infos(url_replace)
-            data_all_articles.append(info)
-
-    # Search if there is a next page or not and send urls of each page from category in a table
-    ul_pager = soup.find_all('ul', class_='pager')
-    # print(ulPager)
-
-    pagination = []
-    if not ul_pager == []:
-
-        r = session.get(categoryUrl)
-        for html in r.html:
-            # print(html.url)
-            pagination.append(html.url)
-
-    # Find all books infos in category
-
-    def find_books_infos_in_category():
-
-        # if there is more than 1 page > loop on every page to find books infos
-        if len(pagination) > 1:
-            for i in range(1, len(pagination)):
-                # print(pagination[i])
-                resp = requests.get(pagination[i])
-                next_soup = BeautifulSoup(resp.content, 'html.parser')
-                next_soup_ol = next_soup.find('ol')
-                h3s = next_soup_ol.find_all('h3')
-                # print(range(len(pagination)))
-                for h3 in h3s:
-                    url = 'http://books.toscrape.com/catalogue' + h3.find('a').get('href')
-                    url_replace = url.replace('../../..', '')
-                    info = get_article_infos(url_replace)
-                    data_all_articles.append(info)
-
-    find_books_in_category()
-    find_books_infos_in_category()
-    print(data_all_articles)
-    # Écrivez les données extraites dans un seul fichier CSV
+    # Écrivez les données dans un fichier CSV qui utilise les champs ci-dessus comme en-têtes de colonnes.
+    header = ['product_page_url', 'universal_ product_code (upc)', 'title', 'price_including_tax',
+              'price_excluding_tax',
+              'number_available', 'product_description', 'category', 'review_rating', 'image_url']
     all_infos = data_all_articles
-    # with open('category_data.csv', 'w', encoding='utf-8') as category:
-    #     w = csv.writer(category, delimiter=',')
-    #     w.writerow(header)
-    #     for data in range(len(all_infos)):
-    #         w.writerow(all_infos[data])
-
-    # Rename the category to name the Csv file
     category_name = soup.title.text
     split_string = category_name.split(' |', 1)
     substring = split_string[0]
@@ -137,6 +116,12 @@ def get_category_articles_infos(categoryUrl):
             w.writerow(all_infos[data])
 
 
-# get_category_articles_infos()
 
-# print(get_category_articles_infos("https://books.toscrape.com/catalogue/category/books/historical-fiction_4/index.html"))
+# baseUrl ="http://books.toscrape.com/catalogue/category/books/fiction_10/"
+# search_pagination(baseUrl)
+# pagination = search_pagination(baseUrl)
+# # find_books_infos_in_category(pagination)
+# dataAllArticles = find_books_infos_in_category(pagination)
+
+# print(dataAllArticles)
+

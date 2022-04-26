@@ -1,7 +1,7 @@
 # Partie3 : Récupération des articles à partir du site en passant par les liens de toutes les catégories
 import requests
 from bs4 import BeautifulSoup
-from tools import get_article_infos, header, get_category_articles_infos
+from tools import get_category_articles_infos
 
 
 url = 'https://books.toscrape.com/'
@@ -9,6 +9,7 @@ response = requests.get(url)
 soup = BeautifulSoup(response.content, 'html.parser')
 soup_ul = soup.find('ul', class_='nav')
 soup_categories = soup_ul.find_all('li')
+
 
 # Extract the links of all categories
 categories_url = []
