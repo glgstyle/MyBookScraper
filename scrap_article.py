@@ -1,4 +1,4 @@
-# Partie 1: Récupération des infos à partir d'un lien article
+# Partie1: Récupération des infos à partir d'un lien article
 
 # Choisissez n'importe quelle page Produit sur le site de Books to Scrape. Écrivez un script Python qui visite cette page et en extrait les informations suivantes :
 
@@ -57,7 +57,7 @@ data.append(image_url)
 # Écrivez les données dans un fichier CSV qui utilise les champs ci-dessus comme en-têtes de colonnes.
 header = ['product_page_url', 'universal_ product_code (upc)', 'title', 'price_including_tax', 'price_excluding_tax', 'number_available', 'product_description', 'category', 'review_rating', 'image_url']
 
-with open('article_data.csv', 'w') as article:
+with open('article_data.csv', 'w', encoding='utf-8') as article:
     w = csv.writer(article, delimiter=',')
     w.writerow(header)
     w.writerow(data)

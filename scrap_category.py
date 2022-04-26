@@ -1,5 +1,5 @@
 # Partie2: Récupération de la liste articles à partir d'un lien d'une catégorie
-import re
+
 import requests
 import csv
 from bs4 import BeautifulSoup
@@ -52,7 +52,7 @@ def find_books_infos_in_category():
 # if there is more than 1 page > loop on every page to find books infos
     if len(pagination) > 1:
         for i in range(1, len(pagination)):
-            print(pagination[i])
+            # print(pagination[i])
             resp = requests.get(pagination[i])
             next_soup = BeautifulSoup(resp.content, 'html.parser')
             next_soup_ol = next_soup.find('ol')
@@ -72,7 +72,7 @@ print(dataAllArticles)
 
 # Écrivez les données extraites dans un seul fichier CSV
 infos = dataAllArticles
-with open('category_data.csv', 'w') as category:
+with open('category_data.csv', 'w', encoding='utf-8') as category:
     w = csv.writer(category, delimiter=',')
     w.writerow(header)
     for data in range(len(dataAllArticles)):
