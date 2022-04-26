@@ -15,19 +15,24 @@ categories_url = []
 category = []
 # all_categories_articles_infos = []
 
-for cat in soup_categories:
-    cat_url = 'http://books.toscrape.com/' + cat.find('a').get('href')
-    categories_url.append(cat_url)
-    prepare_category = cat.a.text.replace('\n', '')
-    category.append(prepare_category.replace(' ', ''))
 
-# category_name = category[1:-1]
+def find_all_books():
+    for cat in soup_categories:
+        cat_url = 'http://books.toscrape.com/' + cat.find('a').get('href')
+        categories_url.append(cat_url)
+        prepare_category = cat.a.text.replace('\n', '')
+        category.append(prepare_category.replace(' ', ''))
 
-# Find infos for each category in category list
-for i in range(1, len(categories_url)):
+    # category_name = category[1:-1]
 
-    # all_books_datas = get_category_articles_infos(categories_url[i])
-    get_category_articles_infos(categories_url[i])
+    # Find infos for each category in category list
+    for i in range(1, len(categories_url)):
+
+        # all_books_datas = get_category_articles_infos(categories_url[i])
+        get_category_articles_infos(categories_url[i])
+
+
+find_all_books()
 
     # all_categories_articles_infos.append(all_books_datas)
 
