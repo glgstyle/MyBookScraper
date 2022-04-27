@@ -113,16 +113,10 @@ def get_category_articles_infos(categoryUrl):
                     info = get_article_infos(url_replace)
                     data_all_articles.append(info)
 
-    find_books_in_category()
-    find_books_infos_in_category()
+
     print(data_all_articles)
     # Écrivez les données extraites dans un seul fichier CSV
     all_infos = data_all_articles
-    # with open('category_data.csv', 'w', encoding='utf-8') as category:
-    #     w = csv.writer(category, delimiter=',')
-    #     w.writerow(header)
-    #     for data in range(len(all_infos)):
-    #         w.writerow(all_infos[data])
 
     # Rename the category to name the Csv file
     category_name = soup.title.text
@@ -137,6 +131,5 @@ def get_category_articles_infos(categoryUrl):
             w.writerow(all_infos[data])
 
 
-# get_category_articles_infos()
-
-# print(get_category_articles_infos("https://books.toscrape.com/catalogue/category/books/historical-fiction_4/index.html"))
+    find_books_in_category()
+    find_books_infos_in_category()
