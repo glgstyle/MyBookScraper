@@ -3,9 +3,10 @@
 import requests
 import csv
 from bs4 import BeautifulSoup
-from tools import get_article_infos, header
+from tools import get_article_infos
 from requests_html import HTMLSession
 
+baseUrl = 'http://books.toscrape.com/catalogue/category/books/fiction_10/'
 
 # Find all books infos in category
 def find_books_infos_in_category(pagination):
@@ -27,32 +28,36 @@ def find_books_infos_in_category(pagination):
                 allListArticlesNextPages.append(info)
     return allListArticlesNextPages
 
-# baseUrl = 'http://books.toscrape.com/catalogue/category/books/historical-fiction_4/'
-# baseUrl = 'http://books.toscrape.com/catalogue/category/books/travel_2/'
-baseUrl = 'http://books.toscrape.com/catalogue/category/books/fiction_10/'
-response = requests.get(baseUrl)
-soup = BeautifulSoup(response.content, 'html.parser')
-soup_ol = soup.find('ol')
-session = HTMLSession()
-dataAllArticles = []
-
-
 
 # Search if there is a next page or not and send urls of each page from category in a table
-ulPager = soup.find_all('ul', class_='pager')
+def search_pagination(baseUrl):
+    response = requests.get(baseUrl)
+    soup = BeautifulSoup(response.content, 'html.parser')
+    session = HTMLSession()
+    ulPager = soup.find_all('ul', class_='pager')
 
-pagination = []
-if not ulPager == []:
+    pages = []
+    if not ulPager == []:
 
-    r = session.get(baseUrl)
-    for html in r.html:
-        pagination.append(html.url)
-else:
-    pagination.append(baseUrl)
+        r = session.get(baseUrl)
+        for html in r.html:
+            pages.append(html.url)
+    else:
+        pages.append(baseUrl)
+
+    return pages
+
+
+# Écrivez les données extraites dans un seul fichier CSV:
+
+#  Header for Csv file
+header = ['product_page_url', 'universal_ product_code (upc)', 'title', 'price_including_tax',
+          'price_excluding_tax',
+          'number_available', 'product_description', 'category', 'review_rating', 'image_url']
+
+pagination = search_pagination(baseUrl)
 dataAllArticles = find_books_infos_in_category(pagination)
 
-
-# Écrivez les données extraites dans un seul fichier CSV
 with open('category_data.csv', 'w') as category:
     w = csv.writer(category, delimiter=',')
     w.writerow(header)
