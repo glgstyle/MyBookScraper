@@ -4,6 +4,7 @@ import requests
 from bs4 import BeautifulSoup
 import csv
 from requests_html import HTMLSession
+import urllib.request
 
 
 def get_article_infos(url):
@@ -121,4 +122,3 @@ def get_category_articles_infos(categoryUrl):
         w.writerow(header)
         for data in range(len(data_all_articles)):
             w.writerow(data_all_articles[data])
-
