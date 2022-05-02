@@ -30,4 +30,11 @@ Sur votre machine :
 - Dans le fichier scrap_category.py :
     - Remplacer la variable baseUrl par l'url de la catégorie à extraire
     - le fichier catégorie_data.csv s'est crée avec les informations de tous les produits de la catégorie (à ouvrir avec excel)
-- 
+
+****Extraire tous les produits de toutes les categories****
+- Dans le terminal tapper la commande :
+    - python scrap_all_articles_from_all_categories.py
+    - Un répertoire nommé categoryCsv s'est crée contenant toutes les informations de tous les livres triés par catégorie
+
+****Extraire les photos des produits****
+- Dans le fichier scrap_all_photos tout en bas mettre l'url correspondant à la recherche dans get_images("url_de_recherche")
