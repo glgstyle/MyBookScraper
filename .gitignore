@@ -1,3 +1,8 @@
 *.idea
 venv/
 __pycache__/
+category_data.csv
+article_data2.csv
+categoryCsv/
+categoryImages/
+
