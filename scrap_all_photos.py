@@ -36,9 +36,6 @@ def get_images(image_search_url):
     for link in range(len(pictures)):
         img_url = pictures[link]
         print(img_url)
-        #
-        # with open(f'images/image{link+1}.jpg', 'wb+') as f:
-        #     f.write(urllib.request.urlopen(img_url).read())
         with open(f'images/image{link+1}.jpg', 'wb+') as f:
             f.write(urllib.request.urlopen(img_url).read())
 
