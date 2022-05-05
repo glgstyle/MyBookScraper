@@ -4,6 +4,7 @@ from bs4 import BeautifulSoup
 import csv
 from requests_html import HTMLSession
 import urllib.request
+import re
 
 
 def get_article_infos(url):
@@ -19,6 +20,7 @@ def get_article_infos(url):
 
     # title
     title = parser.find('div', class_='product_main').h1.string
+    title = re.sub('\W+',' ', title)
     data.append(title)
 
     # price_including_tax
@@ -53,7 +55,6 @@ def get_article_infos(url):
     data.append(image_url)
 
     # GET images
-
     soup_div_picture = parser.find('div', class_='item active')
     soup_picture = soup_div_picture.find('img').get('src')
     find_image_url = 'http://books.toscrape.com/' + soup_picture
@@ -67,10 +68,10 @@ def get_article_infos(url):
         if not os.path.isdir(path):
             raise
 
-    # For each picture in pictures, open repertory pictures, copy / paste them inside and refactoring
-    # their name(picture1, picture2...)
+    # open repertory picture, copy / paste picture inside and refactoring
+    # the title with jpeg at the end
 
-    with open(f'images/image{title}.jpg', 'wb+') as f:
+    with open(f'images/{title}.jpeg', 'wb+') as f:
         f.write(urllib.request.urlopen(picture).read())
 
     return data
@@ -184,7 +185,7 @@ def get_category_articles_infos(categoryUrl):
     name_of_category = substring.replace('\n', '')
 
     # Try to open categoryCsv, if there is no directory create it
-    path = 'categoryCsv'
+    path = 'data/categoryCsv'
     try:
         os.makedirs(path)
     except os.error:
@@ -192,7 +193,7 @@ def get_category_articles_infos(categoryUrl):
             os.mkdir(path)
 
     # Open categoryCsv and write all datas(header + datas) from all books on the website
-    with open('categoryCsv/' + name_of_category + '.csv', 'w', encoding='utf-8') as category:
+    with open('data/categoryCsv/' + name_of_category + '.csv', 'w', encoding='utf-8') as category:
         w = csv.writer(category, delimiter=',')
         w.writerow(header)
         for data in range(len(data_all_articles)):
