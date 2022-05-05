@@ -1,12 +1,16 @@
 # Partie2: Récupération de la liste articles à partir d'un lien d'une catégorie
 
+import sys
 import requests
 import csv
 from bs4 import BeautifulSoup
 from tools import get_article_infos
 from requests_html import HTMLSession
+import os
 
-baseUrl = 'http://books.toscrape.com/catalogue/category/books/fiction_10/'
+# baseUrl = 'http://books.toscrape.com/catalogue/category/books/fiction_10/'
+
+baseUrl = sys.argv[1]
 
 # Find all books infos in category
 def find_books_infos_in_category(pagination):
@@ -58,10 +62,45 @@ header = ['product_page_url', 'universal_ product_code (upc)', 'title', 'price_i
 pagination = search_pagination(baseUrl)
 dataAllArticles = find_books_infos_in_category(pagination)
 
-with open('category_data.csv', 'w') as category:
+# Try to open data, if there is no directory create it
+path = 'data'
+try:
+    os.makedirs(path)
+except os.error:
+    if not os.path.isdir(path):
+        os.mkdir(path)
+
+with open('data/category_data.csv', 'w') as category:
     w = csv.writer(category, delimiter=',')
     w.writerow(header)
     for data in range(len(dataAllArticles)):
         w.writerow(dataAllArticles[data])
 
-
+ # # GET images
+ #    pictures = []
+ #    # loop on every page to find images
+ #    for page in pagination:
+ #        print(page)
+ #        resp = requests.get(page)
+ #        next_soup = BeautifulSoup(resp.content, 'html.parser')
+ #        next_soup_picture = next_soup.find_all('img', class_='thumbnail')
+ #        images = next_soup_picture
+ #        for image in images:
+ #            find_image_url = 'http://books.toscrape.com/' + image.get('src')
+ #            pictures.append(find_image_url.replace('../../', ''))
+ #
+ #            # Try to create pictures repertory, if it's not possible(error), dont do anything(continue)
+ #            path = 'images/'
+ #            try:
+ #                os.makedirs(path)
+ #            except OSError:
+ #                if not os.path.isdir(path):
+ #                    raise
+ #
+ #    # For each picture in pictures, open repertory pictures, copy / paste them inside and refactoring
+ #    # their name(picture1, picture2...)
+ #    for link in range(len(pictures)):
+ #        img_url = pictures[link]
+ #        print(img_url)
+ #        with open(f'images/image{link + 1}.jpg', 'wb+') as f:
+ #            f.write(urllib.request.urlopen(img_url).read())

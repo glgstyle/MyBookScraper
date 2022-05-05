@@ -18,7 +18,8 @@ def get_article_infos(url):
     data.append(products_infos[0].string)
 
     # title
-    data.append(parser.find('div', class_='product_main').h1.string)
+    title = parser.find('div', class_='product_main').h1.string
+    data.append(title)
 
     # price_including_tax
     price_including_tax = products_infos[3].string
@@ -50,12 +51,33 @@ def get_article_infos(url):
     source = find_img.get('src')
     image_url = source.replace("../../", "http://books.toscrape.com/")
     data.append(image_url)
+
+    # GET images
+
+    soup_div_picture = parser.find('div', class_='item active')
+    soup_picture = soup_div_picture.find('img').get('src')
+    find_image_url = 'http://books.toscrape.com/' + soup_picture
+    picture = find_image_url.replace('../../', '')
+
+    # Try to create pictures repertory, if it's not possible(error), dont do anything(continue)
+    path = 'images/'
+    try:
+        os.makedirs(path)
+    except OSError:
+        if not os.path.isdir(path):
+            raise
+
+    # For each picture in pictures, open repertory pictures, copy / paste them inside and refactoring
+    # their name(picture1, picture2...)
+
+    with open(f'images/image{title}.jpg', 'wb+') as f:
+        f.write(urllib.request.urlopen(picture).read())
+
     return data
 
 
 # Find all books infos in a category
 def find_books_infos_in_category(pagination):
-    get_images(pagination)
     all_list_articles_next_page = []
     # loop on every page to find books infos
     for page in pagination:
@@ -123,6 +145,35 @@ def get_category_articles_infos(categoryUrl):
     pagination = search_pagination(categoryUrl)
     data_all_articles = find_books_infos_in_category(pagination)
 
+    # # GET images
+    # pictures = []
+    # # loop on every page to find images
+    # for page in pagination:
+    #     print(page)
+    #     resp = requests.get(page)
+    #     next_soup = BeautifulSoup(resp.content, 'html.parser')
+    #     next_soup_picture = next_soup.find_all('img', class_='thumbnail')
+    #     images = next_soup_picture
+    #     for image in images:
+    #         find_image_url = 'http://books.toscrape.com/' + image.get('src')
+    #         pictures.append(find_image_url.replace('../../', ''))
+    #
+    #         # Try to create pictures repertory, if it's not possible(error), dont do anything(continue)
+    #         path = 'images/'
+    #         try:
+    #             os.makedirs(path)
+    #         except OSError:
+    #             if not os.path.isdir(path):
+    #                 raise
+    #
+    # # For each picture in pictures, open repertory pictures, copy / paste them inside and refactoring
+    # # their name(picture1, picture2...)
+    # for link in range(len(pictures)):
+    #     img_url = pictures[link]
+    #     print(img_url)
+    #     with open(f'images/image{link + 1}.jpg', 'wb+') as f:
+    #         f.write(urllib.request.urlopen(img_url).read())
+    #
     #  Header for Csv file
     header = ['product_page_url', 'universal_ product_code (upc)', 'title', 'price_including_tax',
               'price_excluding_tax',
@@ -147,35 +198,3 @@ def get_category_articles_infos(categoryUrl):
         for data in range(len(data_all_articles)):
             w.writerow(data_all_articles[data])
 
-
-def get_images(image_search_url):
-    pictures = []
-    pagination = search_pagination(image_search_url)
-    # loop on every page to find images
-    for page in pagination:
-        print(page)
-        resp = requests.get(page)
-        next_soup = BeautifulSoup(resp.content, 'html.parser')
-        next_soup_picture = next_soup.find_all('img', class_='thumbnail')
-        images = next_soup_picture
-        for image in images:
-            find_image_url = 'http://books.toscrape.com/' + image.get('src')
-            pictures.append(find_image_url.replace('../../', ''))
-
-            # Try to create pictures repertory, if it's not possible(error), dont do anything(continue)
-            path = 'images/'
-            try:
-                os.makedirs(path)
-            except OSError:
-                if not os.path.isdir(path):
-                    raise
-
-    # For each picture in pictures, open repertory pictures, copy / paste them inside and refactoring
-    # their name(picture1, picture2...)
-    for link in range(len(pictures)):
-        img_url = pictures[link]
-        print(img_url)
-        with open(f'images/image{link+1}.jpg', 'wb+') as f:
-            f.write(urllib.request.urlopen(img_url).read())
-
-# find_books_infos_in_category("https://books.toscrape.com/catalogue/category/books/sequential-art_5/index.html")
