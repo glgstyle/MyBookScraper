@@ -45,7 +45,21 @@ find_a = parser.find_all('a')
 data.append(find_a[3].string)
 
 # review_rating
-data.append(products_infos[6].string)
+rate = parser.find('p', class_='star-rating')
+rate_class = rate.get('class')
+# Check if review is One, Two, Three, Four or five and append the result in the variable review
+review = 0
+if 'One' in rate_class:
+    review = 1
+if 'Two' in rate_class:
+    review = 2
+if 'Three' in rate_class:
+    review = 3
+if 'Four' in rate_class:
+    review = 4
+if 'Five' in rate_class:
+    review = 5
+data.append(review)
 
 # image_url
 find_img = parser.find("img")
