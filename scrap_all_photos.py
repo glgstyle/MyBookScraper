@@ -1,13 +1,10 @@
 #Partie 4: téléchargements de toutes les images liées aux articles
 # Enfin, prolongez votre travail existant pour télécharger et enregistrer le fichier image de chaque page Produit que vous consultez !
-
 import os
 import requests
 from bs4 import BeautifulSoup
 import urllib.request
 from tools import search_pagination
-import csv
-
 
 # for all books get images, download them and put them in a folder named pictures
 def get_images(image_search_url):

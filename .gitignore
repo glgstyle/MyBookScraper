@@ -2,12 +2,10 @@
 venv/
 .venv/
 .env/
-
 __pycache__/
 categoryCsv/
 article_data.csv
 article_data2.csv
 category_data.csv
 images/
-categoryImages
 data/
